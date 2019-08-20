@@ -1,11 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 use App\Core\Container;
 
-spl_autoload_register(function ($class) {
+spl_autoload_register(function (string $class) {
     
-    if (strpos($class, 'App') == 0) {
-        $class = str_replace('App', 'src', $class);
+    if (strpos($class, 'App\\') == 0) {
+        $class = str_replace('App\\', 'src/', $class);
     }
     
     $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);

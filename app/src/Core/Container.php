@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Core;
 
@@ -8,7 +8,6 @@ namespace App\Core;
 class Container
 {
     private $storage = [];
-
     private $factories;
 
     public function __construct(array $factories)

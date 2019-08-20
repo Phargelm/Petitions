@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Core;
 
@@ -12,10 +12,9 @@ class Router
     }
 
     /**
-     * Method implemets simple matching logic by full comparison
-     * using requested path and HTTP method
+     * Implementation of simple matching logic by full comparison using requested path and HTTP method
      */
-    public function getAction($path, $method): ?array
+    public function getAction(string $path, string $method): ?array
     {
         $matchedPath = $this->config[$path] ?? null;
 

@@ -1,17 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 use App\Controller\PetitionsController;
 use App\Core\Router;
 use App\Core\Container;
-use App\Service\ConverterToCsv;
-use App\Service\PetitionsApiClient;
+use App\Service\Petitions\PetitionsService;
+use App\Service\Utils\ConverterToCsv;
+use App\Service\Utils\PetitionsApiClient\PetitionsApiClient;
 
-$parameters = [
-    'routerConfigPath' => __DIR__ . DIRECTORY_SEPARATOR . 'routes.php',
-    'templatesPath' => __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'templates',
-    // Feed url is provided in exercise description
-    'feedUrl' => 'https://www.thepetitionsite.com/servlets/petitions/feed.php?type=publisher&feedID=2372',
-];
+$parameters = require_once __DIR__ . DIRECTORY_SEPARATOR .  'parameters.php';
 
 // List of factories intended for generation services instances. It is used by DI Container.
 return [
@@ -22,9 +18,16 @@ return [
     },
 
     PetitionsController::class => function(Container $container) use ($parameters) {
-        $apiClient = $container->make(PetitionsApiClient::class);
+        $petitionsService = $container->make(PetitionsService::class);
         $converter = $container->make(ConverterToCsv::class);
-        return new PetitionsController($apiClient, $converter, $parameters['templatesPath']);
+        
+        return new PetitionsController($converter, $petitionsService, $parameters['templatesPath'],
+            $parameters['csvFilename']);
+    },
+
+    PetitionsService::class => function (Container $container) {
+        $apiClient = $container->make(PetitionsApiClient::class);
+        return new PetitionsService($apiClient);
     },
 
     PetitionsApiClient::class => function() use ($parameters) {
@@ -33,5 +36,5 @@ return [
 
     ConverterToCsv::class => function() {
         return new ConverterToCsv();
-    }
+    },
 ];
